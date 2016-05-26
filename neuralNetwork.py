@@ -2,14 +2,7 @@ from math import exp
 from random import gauss, gammavariate, choice, uniform
 #from copy import deepcopy
 from time import clock
-from neuralNetConstants import *
-
-class Layer(list):
-
-    def __init__(self):
-
-        pass
-    
+from neuralNetConstants import *    
 
 class Network():
 
@@ -19,7 +12,6 @@ class Network():
         self.inputs = []
         self.outputs = []
         self.synapses = []
-        self.neuronCount = 0
         self.fitness = 0
         self.prevFitness = 0
 
@@ -28,6 +20,8 @@ class Network():
         temp = []
         for i in range(0,n):
             temp.append(InputNode())
+            temp[-1].neuronIndex = i
+            temp[-1].layerIndex = "Inputs"
         self.inputs = temp
 
     def addOutputs(self, n):
@@ -35,20 +29,29 @@ class Network():
         temp = []
         for i in range(0,n):
             temp.append(OutputNode())
+            temp[-1].neuronIndex = i
+            temp[-1].layerIndex = "Outputs"
         self.outputs = temp
 
     def addLayer(self, n, index = None):
         # Adds a layer of n nodes. If no second arg is specified, goes to end
-        temp = []
+        layer = Layer()
         for i in range(0,n):
-            temp.append(Neuron())
+            layer.addNeuron(Neuron())
         if index:
-            self.layers.insert(index, temp)
+            self.layers.insert(index, layer)
+            for lay in self.layers:
+                lay.layerIndex = self.layers.index(lay)
+                for neuron in lay:
+                    neuron.layerIndex = lay.layerIndex
         else:
-            self.layers.append(temp)
-        self.countNeurons()
+            self.layers.append(layer)
+            self.layers[-1].layerIndex = self.layers.index(layer)
+            for neuron in self.layers[-1]:
+                neuron.layerIndex = self.layers[-1].layerIndex
 
     def addSynapse(self, neuronIn, neuronOut):
+
         # Connects two neurons (or inputs/outputs) with a synapse
         self.synapses.append(Synapse(neuronIn, neuronOut))
         neuronOut.inputSynapses.append(self.synapses[-1])
@@ -56,10 +59,9 @@ class Network():
     def addNeuron(self, layerIndex = None):
         # Inserts a neuron into a layer. If no index is specified, a new layer is added to end
         if layerIndex:
-            self.layers[layerIndex].append(Neuron())
+            self.layers[layerIndex].addNeuron(Neuron())
         else:
             self.addLayer(1)
-        self.countNeurons()
 
     def step(self):
         # Once the inputs are set, this will send them through the network
@@ -230,27 +232,12 @@ class Network():
                     except:
                         pass
 
-        if uniform(0,1)*2 < NEURON_SWAP_RATE:
+        if uniform(0,1) < NEURON_SWAP_RATE:
             neuronType = choice(["Logistic", "Sum"])
-            flatlist = []
-            for layer in self.layers:
-                    for neuron in layer:
-                        flatlist.append(neuron)
-            for out in self.outputs:
-                flatlist.append(out)
+            flatlist = self.neuronList(outputs = True)
             neuron = choice(flatlist)
             neuron.type = neuronType
-            
 
-    def countNeurons(self):
-
-        self.neuronCount = 0
-        for layer in self.layers:
-            self.neuronCount += len(layer)
-
-    def countSynapses(self):
-
-        self.synapseCount = len(self.synapses)
 
     def neuronList(self, outputs = False):
         
@@ -264,68 +251,55 @@ class Network():
         return flatlist
 
     def copyNetwork(self):
-
         # Will return a new network that has identical properties to self
         newNet = Network()
         # Add the input and output layers
         newNet.addInputs(len(self.inputs))
         newNet.addOutputs(len(self.outputs))
-        # Copy all the neurons over (MAKE A NEURON.COPY FUNCTION!)
-        index1 = 0
+        # Copy all the layers, neuron copy implicit
         for layer in self.layers:
-            newNet.addLayer(len(layer))
-            index2 = 0
-            for neuron in layer:
-                newNet.layers[index1][index2].B = neuron.B
-                newNet.layers[index1][index2].Q = neuron.Q
-                newNet.layers[index1][index2].type = neuron.type
-                index2 += 1
-            index1 += 1
+            # Fix layer index errors in just one line. Bugs hate it!
+            layer.updateIndexes()
+            newNet.layers.append(layer.copy())
         # Copy all the synapses over
         for syn in self.synapses:
-            # Python magic to find the layer index for input neuron
-            # Index tells the location in self of the input neuron
-            inputFlag = False
-            outputFlag = False
-            layerIndexIn = next((i for i, sublist in
-                                 enumerate(self.layers)
-                                 if syn.neuronIn in sublist),-1)
-            if layerIndexIn == -1:
-                inputFlag = True
-                try:
-                    layerIndexIn = self.inputs.index(syn.neuronIn)
-                except:
-                    break
-            if not inputFlag:
-                otherIndexIn = self.layers[layerIndexIn].index(syn.neuronIn)
-            # Find the index of the output neuron of that synapse
-            layerIndexOut = -1
-            for i in range(0,len(self.layers)):
-                for j in range(0,len(self.layers[i])):
-                    if syn in self.layers[i][j].inputSynapses:
-                        layerIndexOut, otherIndexOut = i, j
-                        break
+            if syn.neuronIn.layerIndex == "Inputs":
+                if syn.neuronOut.layerIndex == "Outputs":
+                    try:
+                        newNet.connect(newNet.inputs[syn.neuronIn.neuronIndex],
+                                   newNet.outputs[syn.neuronOut.neuronIndex])
+                    except:
+                        self.debug(syn)
                 else:
-                    continue
-                break
-            if layerIndexOut == -1:
-                outputFlag = True
-                for output in self.outputs:
-                    if syn in output.inputSynapses:
-                        layerIndexOut = self.outputs.index(output)
-                        break
-            if inputFlag and outputFlag:
-                newNet.addSynapse(newNet.inputs[layerIndexIn], newNet.outputs[layerIndexOut])
-            elif inputFlag and not outputFlag:
-                newNet.addSynapse(newNet.inputs[layerIndexIn], newNet.layers[layerIndexOut][otherIndexOut])
-            elif not inputFlag and outputFlag:
-                newNet.addSynapse(newNet.layers[layerIndexIn][otherIndexIn], newNet.outputs[layerIndexOut])
+                    try:
+                        newNet.connect(newNet.inputs[syn.neuronIn.neuronIndex],
+                                   newNet.layers[syn.neuronOut.layerIndex][syn.neuronOut.neuronIndex])
+                    except:
+                        self.debug(syn)
+            elif syn.neuronOut.layerIndex == "Outputs":
+                newNet.connect(newNet.layers[syn.neuronIn.layerIndex][syn.neuronIn.neuronIndex],
+                               newNet.outputs[syn.neuronOut.neuronIndex])
             else:
-                newNet.addSynapse(newNet.layers[layerIndexIn][otherIndexIn], newNet.layers[layerIndexOut][otherIndexOut])
+                newNet.connect(newNet.layers[syn.neuronIn.layerIndex][syn.neuronIn.neuronIndex],
+                               newNet.layers[syn.neuronOut.layerIndex][syn.neuronOut.neuronIndex])
             newNet.synapses[-1].weight = syn.weight
 
         return newNet
-            
+
+    def debug(self, syn):
+        # Exists purely to characterise why the layer index was fucked up. Keeping in case of emergencies...
+        print("Problem. Synapse details are:")
+        print("Input neuron: {}\n\tLayer Index: {}\n\tNeuron Index: {}".format(syn.neuronIn,
+                                                                              syn.neuronIn.layerIndex,
+                                                                              syn.neuronIn.neuronIndex))
+        print("Output neuron: {}\n\tLayer Index: {}\n\tNeuron Index: {}".format(syn.neuronOut,
+                                                                              syn.neuronOut.layerIndex,
+                                                                              syn.neuronOut.neuronIndex))
+        for lay in self.layers:
+            print("Layer {}".format(lay.layerIndex))
+            for neu in lay:
+                print("\t{}".format(neu))
+
 
 class Neuron():
 
@@ -336,6 +310,8 @@ class Neuron():
         self.output = 0
         self.inputSynapses = []
         self.type = Type
+        self.neuronIndex = None
+        self.layerIndex = None
 
     def evaluate(self, n):
 
@@ -360,6 +336,14 @@ class Neuron():
         self.evaluate(inp)
         #print("neuron output is " + str(self.output))
 
+    def copy(self):
+        newNeuron = Neuron()
+        newNeuron.B = self.B
+        newNeuron.Q = self.Q
+        newNeuron.type = self.type
+        newNeuron.neuronIndex = self.neuronIndex
+        return newNeuron
+
 class Synapse():
 
     def __init__(self, neuronIn, neuronOut):
@@ -383,6 +367,7 @@ class InputNode():
 
     def __init__(self):
         self.output = 0
+        self.neuronIndex = None
 
     def value(self, n):
         self.output = n
@@ -402,6 +387,33 @@ class OutputNode(Neuron):
             inp += synapse.fire()
         self.evaluate(inp)
         self.value = self.output
+
+
+class Layer(list):
+
+    def __init__(self):
+
+        self.layerIndex = None
+
+    def addNeuron(self, neuron):
+
+        neuron.layerIndex = self.layerIndex
+        self.append(neuron)
+        self[-1].neuronIndex = self.index(neuron)
+
+    def updateIndexes(self):
+
+        for i in range(0,len(self)):
+            self[i].neuronIndex = i
+            self[i].layerIndex = self.layerIndex
+
+    def copy(self):
+
+        newLayer = Layer()
+        for neuron in self:
+            newLayer.addNeuron(neuron.copy())
+        newLayer.layerIndex = self.layerIndex
+        return newLayer
 
 class Trainer():
 

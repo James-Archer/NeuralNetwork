@@ -1,5 +1,4 @@
 from neuralNetwork import *
-from copy import deepcopy
 
 xor_inputs = [[0, 0], [0, 1], [1, 0], [1, 1]]
 xor_outputs = [0, 1, 1, 0]
