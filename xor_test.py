@@ -10,9 +10,9 @@ def f(outputs, expectedOutputs):
     return (1 - dif)
 
 netTemp = Network()
-netTemp.createNetwork([2,1], [2,2])
+netTemp.createNetwork([2,1], [1])
 netTemp.populateNetwork()   
 
 a = Trainer(netTemp, 100, f, xor_inputs, xor_outputs)
-best = a.run(0.999, 100, selectionMethod = "Dynamic")
+best = a.run(0.99999, 100, selectionMethod = "Dynamic")
 print('done')

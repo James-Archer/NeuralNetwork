@@ -170,6 +170,8 @@ class Network():
         return out
 
     def mutate(self, weight = 1):
+        # Inceases from 1 to MAX_MUTATE_GROWTH as the weight increases
+        chanceWeight = 1 + ((MAX_MUTATE_GROWTH - 1)/(MAX_STAGNANT_GENERATIONS*STAGNANT_MUTATE_WEIGHT - 1)**(1/MUTATE_RATE))*(weight - 1)**(1/MUTATE_RATE)
 
         for syn in self.synapses:
             syn.weight = gauss(syn.weight, SYNAPSE_SD*weight)
@@ -178,7 +180,7 @@ class Network():
                 neuron.B = abs(gauss(neuron.B, NEURON_B_SD*weight))
                 neuron.Q = abs(gauss(neuron.Q, NEURON_Q_SD*weight))
 
-        if uniform(0,1) < NEW_NEURON_RATE:
+        if uniform(0,1) < NEW_NEURON_RATE*chanceWeight:
             a = choice([0,1])
             if a == 0:
                 # Add neuron
@@ -201,7 +203,7 @@ class Network():
                         except:
                             pass
 
-        if uniform(0,1) < NEW_SYNAPSE_RATE:
+        if uniform(0,1) < NEW_SYNAPSE_RATE*chanceWeight:
             a = choice([0,1])
             if a == 0:
                 #Add synapse
@@ -232,7 +234,7 @@ class Network():
                     except:
                         pass
 
-        if uniform(0,1) < NEURON_SWAP_RATE:
+        if uniform(0,1) < NEURON_SWAP_RATE*chanceWeight:
             neuronType = choice(["Logistic", "Sum"])
             flatlist = self.neuronList(outputs = True)
             neuron = choice(flatlist)
@@ -263,38 +265,37 @@ class Network():
             newNet.layers.append(layer.copy())
         # Copy all the synapses over
         for syn in self.synapses:
-            if syn.neuronIn.layerIndex == "Inputs":
-                if syn.neuronOut.layerIndex == "Outputs":
-                    try:
-                        newNet.connect(newNet.inputs[syn.neuronIn.neuronIndex],
+            try:
+                if syn.neuronIn.layerIndex == "Inputs":
+                    if syn.neuronOut.layerIndex == "Outputs":
+                            newNet.connect(newNet.inputs[syn.neuronIn.neuronIndex],
+                                       newNet.outputs[syn.neuronOut.neuronIndex])
+                    else:
+                            newNet.connect(newNet.inputs[syn.neuronIn.neuronIndex],
+                                       newNet.layers[syn.neuronOut.layerIndex][syn.neuronOut.neuronIndex])
+                elif syn.neuronOut.layerIndex == "Outputs":
+                    newNet.connect(newNet.layers[syn.neuronIn.layerIndex][syn.neuronIn.neuronIndex],
                                    newNet.outputs[syn.neuronOut.neuronIndex])
-                    except:
-                        self.debug(syn)
                 else:
-                    try:
-                        newNet.connect(newNet.inputs[syn.neuronIn.neuronIndex],
+                    newNet.connect(newNet.layers[syn.neuronIn.layerIndex][syn.neuronIn.neuronIndex],
                                    newNet.layers[syn.neuronOut.layerIndex][syn.neuronOut.neuronIndex])
-                    except:
-                        self.debug(syn)
-            elif syn.neuronOut.layerIndex == "Outputs":
-                newNet.connect(newNet.layers[syn.neuronIn.layerIndex][syn.neuronIn.neuronIndex],
-                               newNet.outputs[syn.neuronOut.neuronIndex])
-            else:
-                newNet.connect(newNet.layers[syn.neuronIn.layerIndex][syn.neuronIn.neuronIndex],
-                               newNet.layers[syn.neuronOut.layerIndex][syn.neuronOut.neuronIndex])
-            newNet.synapses[-1].weight = syn.weight
+                newNet.synapses[-1].weight = syn.weight
+            except:
+                #self.debug(syn)
+                pass
 
         return newNet
 
-    def debug(self, syn):
+    def debug(self, problem):
+        if type(problem) == Synapse:
         # Exists purely to characterise why the layer index was fucked up. Keeping in case of emergencies...
-        print("Problem. Synapse details are:")
-        print("Input neuron: {}\n\tLayer Index: {}\n\tNeuron Index: {}".format(syn.neuronIn,
-                                                                              syn.neuronIn.layerIndex,
-                                                                              syn.neuronIn.neuronIndex))
-        print("Output neuron: {}\n\tLayer Index: {}\n\tNeuron Index: {}".format(syn.neuronOut,
-                                                                              syn.neuronOut.layerIndex,
-                                                                              syn.neuronOut.neuronIndex))
+            print("Problem. Synapse details are:")
+            print("Input neuron: {}\n\tLayer Index: {}\n\tNeuron Index: {}".format(problem.neuronIn,
+                                                                                  problem.neuronIn.layerIndex,
+                                                                                  problem.neuronIn.neuronIndex))
+            print("Output neuron: {}\n\tLayer Index: {}\n\tNeuron Index: {}".format(problem.neuronOut,
+                                                                                  problem.neuronOut.layerIndex,
+                                                                                  problem.neuronOut.neuronIndex))
         for lay in self.layers:
             print("Layer {}".format(lay.layerIndex))
             for neu in lay:
@@ -426,6 +427,8 @@ class Trainer():
         self.fitnessFunc = fitness
         self.inputFunc = varyInputFunction
         self.maxFitness = 0
+        self.averageFitness = -999
+        self.selectionMethod = "Top10"
         self.inputs = inputs
         self.expectedOutputs = expectedOutputs
         self.generations = 1
@@ -434,6 +437,7 @@ class Trainer():
         self.bestLocalFitness = None
         self.stagnantFlag = False
         self.deadEndFlag = False
+        self.allInFlag = False
 
         # timing is used to check the run time and the percent time used copying
         self.timing = timing
@@ -451,15 +455,14 @@ class Trainer():
             self.networks[-1].mutate()
             self.networks[-1].fitness = 0
 
-    def run(self, fitnessThreshold = 0.99, minGenerations = 100, selectionMethod = "Top10"):
+    def step(self):
 
-        print("Running initialised")
-        
-        if self.timing:
-            self.timeStart = clock()
-
-        while ((self.maxFitness < fitnessThreshold or self.generations < minGenerations) and not self.deadEndFlag):
-            # Runs all the inputs through the networks and compares them to the expected output using the fitness function
+            # Selects the networks to be copied and mutates them
+            self.select(self.selectionMethod)
+            if not self.stagnantFlag:
+                self.mutate()
+            
+            # Run the networks to find the fitness
             for net in self.networks:
                 out = []
                 for inp in self.inputs:
@@ -470,6 +473,7 @@ class Trainer():
             self.networks = sorted(self.networks, key = lambda network: network.fitness)
             self.networks = list(reversed(self.networks))
 
+            # Keeps track of the mean best fitness
             self.prevMaxFitness.append(self.maxFitness)
             while len(self.prevMaxFitness) > FITNESS_HISTORY_LEN:
                 del self.prevMaxFitness[0]
@@ -478,25 +482,35 @@ class Trainer():
                 
             self.maxFitness = self.networks[0].fitness
 
+
+    def run(self, fitnessThreshold = 0.99, minGenerations = 100, selectionMethod = "Top10"):
+
+        print("Running initialised")
+
+        self.selectionMethod = selectionMethod
+        if self.timing:
+            self.timeStart = clock()
+
+        while ((self.maxFitness < fitnessThreshold or self.generations < minGenerations) and not self.deadEndFlag):
+            # Runs all the inputs through the networks and compares them to the expected output using the fitness function
+            self.step()
+
+            if self.timing:
+                        self.timeEnd = clock()
+                        self.totalTime = self.timeEnd - self.timeStart
+                        print("Time taken was {} seconds, with {}% time on copying".format(self.totalTime,
+                                                                                           100*self.copyTime/self.totalTime))
+
             if self.generations%50 == 0:
                 self.Print()
-
-            # Selects the networks to be copied and mutates them
-            self.select(selectionMethod)
-            self.mutate()
 
             # Vary the inputs using some algorithm
             if self.inputFunc:
                 self.inputs, self.expectedOutputs = self.inputFunc()
 
-        if self.timing:
-            self.timeEnd = clock()
-            self.totalTime = self.timeEnd - self.timeStart
-            print("Time taken was {} seconds, with {}% time on copying".format(self.totalTime,
-                                                                               100*self.copyTime/self.totalTime))
-
-        if self.deadEndFlag:
-            print("Trainer ran into a local maximum in fitness.")
+            if self.deadEndFlag:
+                print("Trainer ran into a local maximum in fitness.")
+            
         return self.networks[0]
                     
                     
@@ -515,22 +529,29 @@ class Trainer():
             # Alters the selection method to account for stagnation in the max fitness.
             if not self.stagnantFlag:
                 # If not stagnant, check to see if it is. If so, flag True and save the current best
-                if self.maxFitness - self.averageFitness < DYNAMIC_THRESHOLD:
+                if (self.maxFitness - self.averageFitness < DYNAMIC_THRESHOLD) and (self.maxFitness < 1 - FITNESS_PEAK_THRESHOLD):
                     self.lastBestFitness = self.maxFitness
                     self.stagnantFlag = True
                     self.stagnantGenerations = 0
+                    print("Stagnated...")
                 # If not stagnent, do top 10 selection
                 else:
                     self.selectTop10()
             # If stagnation has occured, allow random walks with zero pressure
             else:
                 self.stagnantGenerations += 1
-                self.mutate(weight = self.stagnantGenerations*STAGNANT_MUTATE_RATE)
-                if self.stagnantGenerations > MAX_STAGNANT_GENERATIONS:
+                self.mutate(weight = self.stagnantGenerations*STAGNANT_MUTATE_WEIGHT*(1+ALL_IN_FACTOR*self.allInFlag),
+                            n = 1 + self.allInFlag*ALL_IN_NUMBER)
+                if self.allInFlag:
                     self.deadEndFlag = True
+                if self.stagnantGenerations > MAX_STAGNANT_GENERATIONS:
+                    if not self.allInFlag:
+                        print("Fuck it, {} rounds of going crazy".format(ALL_IN_NUMBER))
+                        self.allInFlag = True
                 # Check to see if the random walks have improved upon the last best value
                 if self.maxFitness > self.lastBestFitness:
                     self.stagnantFlag = False
+                    print("Stagnation broken, continuing normally")
                     
 
         elif method == "Top10":
@@ -598,10 +619,13 @@ if __name__ == '__main__':
     temp = Network()
     temp.addInputs(2)
     temp.addOutputs(1)
+    temp.outputs[0].type = "Sum"
     temp.connect(temp.inputs[0], temp.outputs[0])
     temp.connect(temp.inputs[1], temp.outputs[0])
+    for syn in temp.synapses:
+        syn.weight = 1
 
-    test = Trainer(temp, 100, f, [[0.1,0.2]], [0.3], timing = True, varyInputFunction = None)
+    test = Trainer(temp, 100, f, [[0.1,0.2], [3,2], [-0.5,0.5],[0.2,-0.6]], [0.3, 5, 0, -0.4], timing = True, varyInputFunction = None)
     a = test.run(0.9999, 200)
 
 ''' Changing the deepcopy call to the custom copy function in the network class
