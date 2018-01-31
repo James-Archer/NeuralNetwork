@@ -13,6 +13,6 @@ netTemp = Network()
 netTemp.createNetwork([2,1], [1])
 netTemp.populateNetwork()   
 
-a = Trainer(netTemp, 100, f, xor_inputs, xor_outputs)
+a = Trainer(netTemp, 100, f, xor_inputs, xor_outputs, timing=True)
 best = a.run(0.99999, 100, selectionMethod = "Dynamic")
 print('done')

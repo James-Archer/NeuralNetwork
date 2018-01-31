@@ -2,7 +2,8 @@ from math import exp
 from random import gauss, gammavariate, choice, uniform
 #from copy import deepcopy
 from time import clock
-from neuralNetConstants import *    
+from neuralNetConstants import *  
+  
 
 class Network():
 
@@ -445,6 +446,7 @@ class Trainer():
             self.timeStart = 0
             self.timeEnd = 0
             self.copyTime = 0
+            self.mutateTime = 0
 
         # Generates the list of networks to be trained. One unaltered copy of the original is used
         self.networks.append(self.netTemplate.copyNetwork())
@@ -498,8 +500,9 @@ class Trainer():
             if self.timing:
                         self.timeEnd = clock()
                         self.totalTime = self.timeEnd - self.timeStart
-                        print("Time taken was {} seconds, with {}% time on copying".format(self.totalTime,
-                                                                                           100*self.copyTime/self.totalTime))
+                        #print("Time taken was {} seconds, with {}% time on copying and {}% on mutating.".format(self.totalTime,
+                        #                                                                   100*self.copyTime/self.totalTime,
+                        #                                                                   100*self.mutateTime/self.totalTime))
 
             if self.generations%50 == 0:
                 self.Print()
@@ -510,18 +513,26 @@ class Trainer():
 
             if self.deadEndFlag:
                 print("Trainer ran into a local maximum in fitness.")
+                
+        if self.timing:
+            print("Time taken was {} seconds, with {}% time on copying and {}% on mutating.".format(self.totalTime,
+                                                                                           100*self.copyTime/self.totalTime,
+                                                                                           100*self.mutateTime/self.totalTime))
             
         return self.networks[0]
                     
                     
 
     def mutate(self, n = 1, weight = 1):
-
+        if self.timing:
+            self.mutateTime -= clock()
         # Mutates all but the best network
         for i in range(0,n):
             for net in self.networks[1:]:
                 net.mutate(weight)
         self.generations += n
+        if self.timing:
+            self.mutateTime += clock()
 
     def select(self, method = "Top10"):
 
