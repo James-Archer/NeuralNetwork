@@ -1,5 +1,7 @@
 # NeuralNetwork
-A layered neural network. Designed by James Archer and Matthew Griffiths.
+A layered neural network. Designed by James Archer and [Matthew Griffiths](https://github.com/Sever0us). If you've stumbled across this for whatever reason, this is *NOT* the code you're looking for. Feel free to have a look but you'll probably just end up hating me and everything I've ever done. If you can use this in any project; firstly, I'm so sorry, and secondly, feel free to contribute.
+
+Mostly developed for [this project](https://github.com/James-Archer/HungryPond). The `Trainer` class is not used in that and so is very unlikely to be further developed.
 
 Classes included in this module:
 
