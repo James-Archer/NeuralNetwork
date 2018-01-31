@@ -2,7 +2,7 @@ from math import exp
 from random import gauss, gammavariate, choice, uniform
 #from copy import deepcopy
 from time import clock
-from neuralNetConstants import *  
+from .neuralNetConstants import *  
   
 
 class Network():
@@ -15,6 +15,16 @@ class Network():
         self.synapses = []
         self.fitness = 0
         self.prevFitness = 0
+        
+    def Print(self):
+        for inp in self.inputs:
+            print(inp)
+        for layer in self.layers:
+            print(layer)
+            for neuron in layer:
+                print(neuron)
+        for out in self.outputs:
+            print(out)
 
     def addInputs(self, n):
         # Adds n input nodes
@@ -314,6 +324,10 @@ class Neuron():
         self.type = Type
         self.neuronIndex = None
         self.layerIndex = None
+        
+    def __str__(self):
+        
+        return f"Neuron: {self.B}, {self.Q}"
 
     def evaluate(self, n):
 
@@ -354,6 +368,10 @@ class Synapse():
         self.output = 0
         self.neuronIn = neuronIn
         self.neuronOut = neuronOut
+        
+    def __str__(self):
+        
+        return f"Synapse: {self.weight}"
 
     def fire(self):
 
@@ -370,6 +388,10 @@ class InputNode():
     def __init__(self):
         self.output = 0
         self.neuronIndex = None
+        
+    def __str__(self):
+        
+        return f"Input: {self.neuronIndex}"
 
     def value(self, n):
         self.output = n
@@ -381,6 +403,10 @@ class OutputNode(Neuron):
         Neuron.__init__(self, Type = "Logistic")
         self.value = 0
         self.inputSynapses = []
+        
+    def __str__(self):
+        
+        return f"Output: {self.neuronIndex}"
 
     def getInputs(self):
 
@@ -396,6 +422,10 @@ class Layer(list):
     def __init__(self):
 
         self.layerIndex = None
+        
+    def __str__(self):
+        
+        return f"Layer: {self.layerIndex}"
 
     def addNeuron(self, neuron):
 
