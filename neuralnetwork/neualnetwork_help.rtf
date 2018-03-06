@@ -1,0 +1,191 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf210
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid1\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid101\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid201\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid3}
+{\list\listtemplateid4\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid301\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid4}
+{\list\listtemplateid5\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid401\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid5}
+{\list\listtemplateid6\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid501\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid6}
+{\list\listtemplateid7\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid601\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid7}
+{\list\listtemplateid8\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid701\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid8}
+{\list\listtemplateid9\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid801\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid9}
+{\list\listtemplateid10\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid901\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid10}
+{\list\listtemplateid11\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid1001\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid11}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}{\listoverride\listid4\listoverridecount0\ls4}{\listoverride\listid5\listoverridecount0\ls5}{\listoverride\listid6\listoverridecount0\ls6}{\listoverride\listid7\listoverridecount0\ls7}{\listoverride\listid8\listoverridecount0\ls8}{\listoverride\listid9\listoverridecount0\ls9}{\listoverride\listid10\listoverridecount0\ls10}{\listoverride\listid11\listoverridecount0\ls11}}
+\paperw11900\paperh16840\margl1440\margr1440\vieww13060\viewh13620\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\f0\fs24 \cf0 Classes included in this module:\
+\
+
+\b Network
+\b0  - This is an individual network comprised of inputNodes, outputNodes and layers of Neurons, all connected by Synapses to perform non-linear calculations between inputNodes and outputNodes.\
+\
+
+\b Neuron
+\b0  - The nodes where calculations are performed on one or more inputs, received from Synapses. Various operations can be performed on the inputs. \
+\
+
+\b Synapse
+\b0  - The links between Neurons and inputNodes/outputNodes. They take an input signal, multiply by a weight and sends to the outputs when called upon.\
+\
+
+\b InputNode
+\b0  - The inputs where data is fed into the network. Is treated like a Neuron by Synapses.\
+\
+
+\b OutputNode
+\b0  - Subclass of Neuron. Will store the outputs from the network.\
+\
+
+\b Trainer
+\b0  - A collection of networks, inputs and expected outputs to train the networks on.\
+\
+\
+
+\fs32 \ul Network
+\fs24 \ulnone \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\sb60\sa60\pardirnatural
+
+\b \cf0 Parameters
+\b0 :\
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\li720\fi-720\sb60\sa60\pardirnatural
+\ls1\ilvl0\cf0 {\listtext	\'95	}layers - a list of layers containing the Neurons. \
+{\listtext	\'95	}inputs - a list of the inputNodes.\
+{\listtext	\'95	}outputs - a list of the outputNodes.\
+{\listtext	\'95	}synapses - a list of all Synapses. Some of the Synapses may not be linked to any Neurons, due to the mutate function.\
+{\listtext	\'95	}neuronCount - the number of Neurons in the Network.\
+{\listtext	\'95	}fitness - the current fitness of the Network, evaluated by an external fitness function, usually handled by the Trainer class.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\sb60\sa60\pardirnatural
+\cf0 \
+
+\b Functions
+\b0 :\
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\li720\fi-720\sb60\sa60\pardirnatural
+\ls2\ilvl0\cf0 {\listtext	\'95	}addInputs(n) - adds n inputNodes to the inputs list.\
+{\listtext	\'95	}addOutputs(n) - adds n outputNodes to the outputs list. Default to the logistic function.\
+{\listtext	\'95	}addLayer(n, index = None) - adds a list to the layers list with n Neurons in this list. If index is specified it will insert the layer into that position, otherwise it will go to the end.\
+{\listtext	\'95	}addSynapse(neuronic, neuronOut) - creates a Synapse linking neuronic to neuronOut. Don\'92t use this to add a Synapse to the Network, use connect()\
+{\listtext	\'95	}addNeuron(layerIndex = None) - adds a Neuron to the Network, in layer layerIndex. If not specified, the new Neuron will go in a new layer at the end.\
+{\listtext	\'95	}step() - runs the inputs through the Network and assign the outputNodes.value\
+{\listtext	\'95	}createNetwork(inOut, layers) - clears the Network nodes and connections and creates a new one. inOut is a list of the form (number of inputNodes, number of outputNodes), and layers is a list of the number of Neurons to be in each layer. Does not add any Synapses.\
+{\listtext	\'95	}populateNetwork(synType = \'93Full\'94, clear = False, completeness = 0.5) - this populates the Network with Synapses. If synType = \'93Full\'94 then for each layer, all the Neurons (or outputNodes) will have a synapse linking them to each Neuron (or inputNode) in the preceding layer. If synType = \'93Random\'94, then there will be a number of Synapses randomly linking Neurons. All input nodes and outputNodes are guaranteed to have at least one Synapse linked to them, and each Neuron will have at least one input and output Synapse. The total number of Synapses depends on the completeness argument.\
+{\listtext	\'95	}clearNetwork() - removes all Neurons and Synapses. Is called by createNetwork()\
+{\listtext	\'95	}maxConnections() - calculates the maximum number of Synapses the Network can have using the \'93Full\'94 method in populateNetwork(). Returns this number.\
+{\listtext	\'95	}connect(neuron1, neuron2) - checks to see if the two Neurons have a Synapse between them already, and if not, will add one.\
+{\listtext	\'95	}runInputs(inputs) - takes a list of inputs and assigns them to Network.inputs. It then calls step() and returns a list of the outputs. \
+{\listtext	\'95	}mutate() - Will add or remove Synapses, Neurons and alter the Neuron type randomly depending on the weights defined at the top of the file.\
+{\listtext	\'95	}countNeurons() - updates neuronCount.\
+{\listtext	\'95	}countSynapses() - updates synapseCount.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\sb60\sa60\pardirnatural
+\cf0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\fs32 \cf0 \ul \ulc0 Neuron
+\fs24 \ulnone \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\sb60\sa60\pardirnatural
+
+\b \cf0 Parameters
+\b0 :\
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\li720\fi-720\sb60\sa60\pardirnatural
+\ls3\ilvl0\cf0 {\listtext	\'95	}output - the value that is retrieved by a Synapse. Is updated by getInputs()\
+{\listtext	\'95	}inputSynapses - a list of the Synapses that link into the Neuron.\
+\ls3\ilvl0{\listtext	\'95	}type - the type of operation the Neuron performs. Can be \'93Logistic\'94 (default) or \'93Sum\'94.\
+{\listtext	\'95	}B - the parameter used in the logistic function to determine the steepness.\
+{\listtext	\'95	}Q - the parameter used by the logistic function to determine where the step begins.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\sb60\sa60\pardirnatural
+\cf0 \
+
+\b Functions
+\b0 :\
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\li720\fi-720\sb60\sa60\pardirnatural
+\ls4\ilvl0\cf0 {\listtext	\'95	}getInputs() - takes the output value from all the Synapses in inputSynapses and sums them up. Passes this sum into evaluate()\
+\ls4\ilvl0{\listtext	\'95	}evaluate(inp) - runs the inp through the operation assigned to the Neuron, then updates the output value to this.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\sb60\sa60\pardirnatural
+\cf0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\fs32 \cf0 \ul Synapse
+\fs24 \ulnone \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\sb60\sa60\pardirnatural
+
+\b \cf0 Parameters
+\b0 :\
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\li720\fi-720\sb60\sa60\pardirnatural
+\ls5\ilvl0\cf0 {\listtext	\'95	}weight - the weight that the input is multiplied by.\
+\ls5\ilvl0{\listtext	\'95	}output - the output value to be called by the Neuron linked to this Synapse.\
+{\listtext	\'95	}neuronIn - the Neuron that the Synapse takes the output of.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\sb60\sa60\pardirnatural
+\cf0 \
+
+\b Functions
+\b0 :\
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\li720\fi-720\sb60\sa60\pardirnatural
+\ls6\ilvl0\cf0 {\listtext	\'95	}fire() - takes the input from the Neuron (or inputNode), and multiplies it by the Synapses weight. If the output is outside the range defined by MAX_SYNAPSE_OUTPUT or MIN_SYNAPSE_OUTPUT it is set to the appropriate max/min, then this value is set to the output of the Synapse.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\sb60\sa60\pardirnatural
+\cf0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\fs32 \cf0 \ul InputNode
+\fs24 \ulnone \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\sb60\sa60\pardirnatural
+
+\b \cf0 Parameters
+\b0 :\
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\li720\fi-720\sb60\sa60\pardirnatural
+\ls7\ilvl0\cf0 {\listtext	\'95	}output - the value retrieved by a Synapse.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\sb60\sa60\pardirnatural
+\cf0 \
+
+\b Functions
+\b0 :\
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\li720\fi-720\sb60\sa60\pardirnatural
+\ls8\ilvl0\cf0 {\listtext	\'95	}value(n) - sets the output to n.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\sb60\sa60\pardirnatural
+\cf0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\fs32 \cf0 \ul OutputNode
+\fs24 \ulnone \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\sb60\sa60\pardirnatural
+
+\b \cf0 Parameters
+\b0 :\
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\li720\fi-720\sb60\sa60\pardirnatural
+\ls9\ilvl0\cf0 {\listtext	\'95	}value - the final output value for this node of the Network. Otherwise is identical to a Neuron.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\sb60\sa60\pardirnatural
+\cf0 \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\fs32 \cf0 \ul Trainer
+\fs24 \ulnone \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\sb60\sa60\pardirnatural
+
+\b \cf0 Parameters
+\b0 :\
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\li720\fi-720\sb60\sa60\pardirnatural
+\ls10\ilvl0\cf0 {\listtext	\'95	}netTemplate - a Network that will be used as the basis for all the Networks in the list.\
+\ls10\ilvl0{\listtext	\'95	}networks - a list of the Networks in the Trainer.\
+{\listtext	\'95	}fitnessFunc(outputs, expectedOutputs) - the function used to evaluate the fitness value of a Network. Must take arguments of a list of the Network outputs and the expected outputs. Returns a number, usually with a maximum of 1. \
+{\listtext	\'95	}inputs - a list of the inputs to train the Networks with.\
+{\listtext	\'95	}expectedOutputs - a list of the expected outputs for the network.\
+{\listtext	\'95	}generations - the number of generation the Networks have gone through.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\sb60\sa60\pardirnatural
+\cf0 \
+
+\b Functions
+\b0 :\
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\li720\fi-720\sb60\sa60\pardirnatural
+\ls11\ilvl0\cf0 {\listtext	\'95	}run(fitnessThreshold = 0.99, minGenerations = 100) - runs the Trainer until the best Network has a fitness greater than fitnessThreshold and the number of generations are greater than minGenerations.\
+\ls11\ilvl0{\listtext	\'95	}mutate() - mutates all the Networks.\
+{\listtext	\'95	}select(method = \'93Top10\'94) - Chooses which Networks to propagate into the next generation. \'93Top10\'94 takes the top 10% of Networks and makes ten copies of each, mutating them. Keeps a copy of the best performing Network unchanged.\
+{\listtext	\'95	}Print() - prints off the generation number, and max fitness of the Networks.\
+}
